@@ -46,11 +46,14 @@
         <ApplicableAgeGroups>
             <MinimumAge>1</MinimumAge>
         </ApplicableAgeGroups>
+    	<!-- Need to determine how to define this in SDC. Form/Repository specific -->
         <TextCues>
+        	<!-- could be a new element -->
             <ContextPhrases>
                 <ContextPhrase></ContextPhrase>
             </ContextPhrases>
             <KeyWords>
+            	<!-- May be similar to the admin module in the Package header -->
                 <KeyWord>LIRADS Liver lesion</KeyWord>  
             </KeyWords>
             <NegationPhrases>
@@ -59,6 +62,7 @@
             <Regex/>           
         </TextCues>
         <VoiceActivation>
+        	<!-- could be a new element -->
         	<VoiceCommandPhrase>LIRADS</VoiceCommandPhrase>
         	<VoiceCommandPhrase>Liver lesion</VoiceCommandPhrase>
         	<VoiceCommandPhrase>American College of Radiology</VoiceCommandPhrase> 
@@ -70,8 +74,10 @@
 		<GlobalValue Id="diameterSmall">10</GlobalValue>
     	
         <GlobalValue Id="diameterLarge">20</GlobalValue>
+    	<!-- consider adding GlobalValues to SDC - similar to hardcoding an answer into SDC, but adds a constant -->
 		       
-    	<ChoiceDataElement Id="observationCharacter" IsRequired="true" CdeId="RDE65" DisplaySequence="1" >        	
+    	<ChoiceDataElement Id="observationCharacter" IsRequired="true" CdeId="RDE65" DisplaySequence="1" >     
+    		<!-- like a single selection question -->
             <Label>Observation in high risk patient</Label>
     		<Hint> Observation : Area with imaging features that differ from those of adjacent liver parenchyma \r\n high risk patient:in whom the incidence of HCC is sufficient to justify screening or surveillance according to AASLD guidelines  </Hint>
     		<Diagrams>
@@ -101,6 +107,7 @@
             			Focal scar
             			Observation that spontaneously disappears at follow-up</Hint>
             	</Choice>
+            	<!-- Could be a property or defined as a Hint element--> 
             	<Choice>
             		<Value>probablyBenign</Value>
             		<Label>Probably benign</Label>
@@ -141,6 +148,7 @@
     			<Diagram>
     				<Location>Arterialphase1.png</Location>
     				<Label>Arterial phase</Label>
+    				<!-- SDC Can handle images in BlobContent, can put BlobContent or references --> 
     			</Diagram>
     			<Diagram>
     				<Location>Arterialphase2.png</Location>
@@ -183,6 +191,7 @@
         
     	<NumericDataElement Id="diameter" IsRequired="true" CdeId="RDE81" DisplaySequence="3">
     		<Label>Diameter (mm)</Label>
+    		<!-- Have a data type, not a question type--> 
     		<Hint>Size of the lesion (outer edge to outer edge) in mm</Hint>
     		<Diagrams>
     			<Diagram>
@@ -229,6 +238,7 @@
                      <Area Shape="rect" Coords="0,462,800,623" ChoiceValue="no"/>
                     <Area Shape="rect" Coords="0,0,799,463" ChoiceValue="yes"/>
                 </Map>
+            	<!-- how to handle the image map in SDC? Recreate these elements in SDC? -->
             </ImageMap>
         </ChoiceDataElement>
 		       

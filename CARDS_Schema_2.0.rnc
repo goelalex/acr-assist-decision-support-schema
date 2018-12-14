@@ -1,6 +1,8 @@
 # Version 1.0
 start = ReportingModule
-ReportingModule = element ReportingModule {external "Metadata.rnc", DataElements, Rules, EndPoints }
+ReportingModule = element ReportingModule {external "ACRAssist_xml_schema.rnc", DataElements, Rules, EndPoints }
+#original line below was providing an validation error because it couldn't find "Metadata.rnc" 
+#ReportingModule = element ReportingModule {external "Metadata.rnc", DataElements, Rules, EndPoints }
 Citation =
     element Citation {
         attribute PubmedId { xsd:token }?,
@@ -30,6 +32,7 @@ DataElementTypes =
     | ComputedDataElement
     | DateTimeDataElement
     | DurationDataElement
+    #Can make custom properties in SDC - need to acommodate many different use cases 
 GlobalValue =
     element GlobalValue {
         attribute Id { xsd:ID },
@@ -44,14 +47,16 @@ Diagrams =
             attribute IsKeyDiagram { "true" | "false" }?
         }+
     }
+    #are these diagrams like an ultrasonographer diagram? What about annotations? does this apply to inserted images as well? 
 DisplaySequence =
     attribute DisplaySequence {
         xsd:integer { minInclusive = "0" }
     }
-    
+    #Does this refer to display sequence on a hanging protocol? 
 baseElementContents =
     attribute Id { xsd:ID },
     attribute CdeId { xsd:token }?,
+    #Does this refer to the RSNA CDE library? 
     attribute IsRequired { "true" | "false" }?,
     DisplaySequence?,
     CodableConcept?,
@@ -59,12 +64,13 @@ baseElementContents =
     element Hint { text }?,
     Diagrams?,
     element VoiceCommand { text }?,
+    #What does voice command do? is this used to trigger things? 
     attribute Editable { "true" | "false" }?,
     attribute Hasprefilled { "true" | "false" }?,
     attribute Output { "true" | "false" }?,
     attribute Unit { text }?,
     attribute SourceFilled { text }?  
-    
+    #SDC has different attribute model for how to do this - e.g. @selected
     CodableConcept = element CodableConcept{
     attribute Name {text } ,
     Coding+
@@ -77,6 +83,7 @@ baseElementContents =
          element Display { attribute Value{text}},
          element UserSelected { attribute Value{"true" | "false"}} ?
     }+
+    #Are these for standard terminologies e.g. RadLex, LOINC, SNOMED-CT?
     
 ChoiceNotRelevant =  element ChoiceNotRelevant
 {
@@ -87,9 +94,10 @@ ChoiceNotRelevant =  element ChoiceNotRelevant
 baseConditionalPropertyContents =
       ConditionType,
       element IsRelevant {"true" | "false" }?,
+      #how do you define IsRelevant? 
       element IsRequired {"true" | "false" }?,
       element DisplaySequence {xsd:integer}?
-
+        #is this like max/minCard in SDC? 
 choiceConditionalProperty = element ConditionalProperty { 
         baseConditionalPropertyContents,
         ChoiceNotRelevant?
@@ -118,6 +126,7 @@ ComputedDataElement =
         Diagrams?,
         (computedValue | valueDecisionPoint)
     }
+    #does this do a calculation? How do you combine this with ConditionType/ConditionalProperty to produce something like a TI-RADS score? 
 NumericDataElement =
     element NumericDataElement {
         baseElementContents,
@@ -138,12 +147,12 @@ IntegerDataElement =
           baseElementContents,
           element Format { text }
       }
-      
+      #What dateTime format are you using? ISO? 
  DurationDataElement = 
     element DurationDataElement {
             baseElementContents
         }
-    
+    #Can we get an example of when this is used? 
 Choice =
     element Choice {
         element Value { xsd:token },
@@ -153,11 +162,13 @@ Choice =
         attribute IsDefault { "true" | "false" }?,
         element ReportText { text }?
     }
+    #What is ReportText, is it a freetext field? Does this create a text field for VoiceCommand? 
 ChoiceInfo = element ChoiceInfo { Choice, Choice+ }
 imageMapStyleAttributes =
     attribute Outline { text }?,
     attribute HoverFill { text }?,
     attribute SelectedFill { text }?
+    #What are definitions and examples of these? 
 ImageMap =
     element ImageMap {
         imageElements,
@@ -172,6 +183,7 @@ ImageMap =
             }+
         }
     }
+    #Can this draw on any image? I.e. acquired image or diagram? 
 ChoiceDataElement =
     element ChoiceDataElement {
         attribute AllowFreetext { "true" | "false" }?,
@@ -191,6 +203,7 @@ MultiChoiceDataElement =
 # Start of next section (RULES)
 ConditionType = AndCondition | OrCondition | NotCondition
 ConditionType |= EqualCondition | GreaterThanCondition | LessThanCondition
+#Does this work on numeric items? E.g. a nodule measurement greater than 4mm triggers another section for example? 
 ConditionType |= GreaterThanOrEqualsCondition | LessThanOrEqualsCondition
 ConditionType |= ContainsCondition | HasAnyNChoicesCondition
 AndCondition = element AndCondition { ConditionType, ConditionType+ }
@@ -200,6 +213,7 @@ dataElementIdAttribute = attribute DataElementId { xsd:IDREF }
 comparisonConditionContents =
     dataElementIdAttribute,
     attribute ComparisonValue { xsd:token }
+    #Does this compare two fields, or 2 values? Or can it compare to something from outside of the form? 
 EqualCondition = element EqualCondition { comparisonConditionContents }
 GreaterThanCondition = element GreaterThanCondition { comparisonConditionContents }
 LessThanCondition = element LessThanCondition { comparisonConditionContents }
@@ -217,11 +231,13 @@ ContainsCondition =
     }
 Rules = element Rules { DecisionPoint }
 # { branchModifiers, DecisionPoint }
+#What do the branchModifiers do? 
 DataElementRef =
     element DataElementRef {
         attribute DataElementId { xsd:IDREF },
         empty
     }
+    #What does DataElementRef do? 
 ChoiceRef =
     element ChoiceRef {
         attribute DataElementId { xsd:IDREF },
@@ -253,6 +269,7 @@ DecisionPoint =
         }?
     }
 # Begin ENDPOINTS Section
+#What does ENDPOINTS Section do? 
 EndPointRef =
     element EndPointRef {
         attribute EndPointId { xsd:IDREF },
@@ -282,6 +299,7 @@ sectionIdAttr =
     attribute SectionId {
         "findings" | "impression" | "recommendation" | "impressionRecommendation" | "citation"
     }
+    #Are tehse formally defined sections? SDC leaves this to implementator and Form Creator 
 recommendationBase =
     element ClinicalCondition { text }?,
     element References { Citation+ }?,

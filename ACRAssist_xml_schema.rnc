@@ -20,6 +20,7 @@ Metadata =
         }?,
         element ReportCitationText { text },
         element Ontology {
+        #What's Ontology refer to? 
             element AnatomicRegions {
                 attribute CodingSystem { text }?,
                 element Region {
@@ -39,10 +40,12 @@ Metadata =
             attribute Value { "Male" | "Female" | "Both" },
             empty
         },
+        #
         element ApplicableAgeGroups {
             element MinimumAge { xsd:nonNegativeInteger }?,
             element MaximumAge { xsd:nonNegativeInteger }?
         }?,
+        #Why is age presented this way? 
         element TextCues {
             element ContextPhrases {
                 element ContextPhrase { text }+

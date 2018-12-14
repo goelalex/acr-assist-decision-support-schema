@@ -1,0 +1,962 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <!-- Version 1.0 -->
+  <start>
+    <ref name="ReportingModule"/>
+  </start>
+  <define name="ReportingModule">
+    <element name="ReportingModule">
+      <externalRef href="ACRAssist_xml_schema.rng"/>
+      <ref name="DataElements"/>
+      <ref name="Rules"/>
+      <ref name="EndPoints"/>
+    </element>
+  </define>
+  <define name="Citation">
+    <oneOrMore>
+      <element name="Citation">
+        <optional>
+          <attribute name="PubmedId">
+            <data type="token"/>
+          </attribute>
+        </optional>
+        <optional>
+          <attribute name="Url">
+            <data type="anyURI"/>
+          </attribute>
+        </optional>
+        <text/>
+      </element>
+    </oneOrMore>
+  </define>
+  <!-- definitions for other parts of the schema -->
+  <define name="codingSystemAttr">
+    <attribute name="CodingSystem"/>
+  </define>
+  <define name="codeAttrs">
+    <optional>
+      <ref name="codingSystemAttr"/>
+    </optional>
+    <attribute name="Code">
+      <data type="token"/>
+    </attribute>
+  </define>
+  <define name="Diagnosis">
+    <element name="Diagnosis">
+      <ref name="codeAttrs"/>
+      <text/>
+    </element>
+  </define>
+  <!-- Exam = element Exam { codeAttrs, text } #this is not being used anywhere, but should be used in Followup Exams -->
+  <define name="Modality">
+    <element name="Modality">
+      <ref name="codeAttrs"/>
+    </element>
+  </define>
+  <define name="BodyRegion">
+    <element name="BodyRegion">
+      <ref name="codeAttrs"/>
+    </element>
+  </define>
+  <define name="imageElements">
+    <element name="Location">
+      <text/>
+    </element>
+    <optional>
+      <element name="Label">
+        <text/>
+      </element>
+    </optional>
+  </define>
+  <!-- start of the next Section Data Elements -->
+  <define name="DataElements">
+    <element name="DataElements">
+      <oneOrMore>
+        <ref name="DataElementTypes"/>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="DataElementTypes">
+    <choice>
+      <ref name="ChoiceDataElement"/>
+      <ref name="NumericDataElement"/>
+      <ref name="IntegerDataElement"/>
+      <ref name="MultiChoiceDataElement"/>
+      <ref name="GlobalValue"/>
+      <ref name="ComputedDataElement"/>
+      <ref name="DateTimeDataElement"/>
+      <ref name="DurationDataElement"/>
+    </choice>
+  </define>
+  <define name="GlobalValue">
+    <element name="GlobalValue">
+      <attribute name="Id">
+        <data type="ID"/>
+      </attribute>
+      <text/>
+    </element>
+  </define>
+  <define name="Diagrams">
+    <element name="Diagrams">
+      <oneOrMore>
+        <element name="Diagram">
+          <element name="Location">
+            <text/>
+          </element>
+          <element name="Label">
+            <text/>
+          </element>
+          <optional>
+            <attribute name="DisplaySequence">
+              <data type="integer"/>
+            </attribute>
+          </optional>
+          <optional>
+            <attribute name="IsKeyDiagram">
+              <choice>
+                <value>true</value>
+                <value>false</value>
+              </choice>
+            </attribute>
+          </optional>
+        </element>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="DisplaySequence">
+    <attribute name="DisplaySequence">
+      <data type="integer">
+        <param name="minInclusive">0</param>
+      </data>
+    </attribute>
+  </define>
+  <define name="baseElementContents">
+    <attribute name="Id">
+      <data type="ID"/>
+    </attribute>
+    <optional>
+      <attribute name="CdeId">
+        <data type="token"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="IsRequired">
+        <choice>
+          <value>true</value>
+          <value>false</value>
+        </choice>
+      </attribute>
+    </optional>
+    <optional>
+      <ref name="DisplaySequence"/>
+    </optional>
+    <optional>
+      <ref name="CodableConcept"/>
+    </optional>
+    <element name="Label">
+      <text/>
+    </element>
+    <optional>
+      <element name="Hint">
+        <text/>
+      </element>
+    </optional>
+    <optional>
+      <ref name="Diagrams"/>
+    </optional>
+    <optional>
+      <element name="VoiceCommand">
+        <text/>
+      </element>
+    </optional>
+    <optional>
+      <attribute name="Editable">
+        <choice>
+          <value>true</value>
+          <value>false</value>
+        </choice>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="Hasprefilled">
+        <choice>
+          <value>true</value>
+          <value>false</value>
+        </choice>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="Output">
+        <choice>
+          <value>true</value>
+          <value>false</value>
+        </choice>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="Unit"/>
+    </optional>
+    <optional>
+      <attribute name="SourceFilled"/>
+    </optional>
+  </define>
+  <define name="CodableConcept">
+    <element name="CodableConcept">
+      <attribute name="Name"/>
+      <oneOrMore>
+        <ref name="Coding"/>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="Coding">
+    <oneOrMore>
+      <element name="Coding">
+        <element name="System">
+          <attribute name="Value"/>
+        </element>
+        <element name="Version">
+          <attribute name="Value"/>
+        </element>
+        <element name="Code">
+          <attribute name="Value">
+            <data type="token"/>
+          </attribute>
+        </element>
+        <element name="Display">
+          <attribute name="Value"/>
+        </element>
+        <optional>
+          <element name="UserSelected">
+            <attribute name="Value">
+              <choice>
+                <value>true</value>
+                <value>false</value>
+              </choice>
+            </attribute>
+          </element>
+        </optional>
+      </element>
+    </oneOrMore>
+  </define>
+  <define name="ChoiceNotRelevant">
+    <element name="ChoiceNotRelevant">
+      <attribute name="ChoiceValue"/>
+      <empty/>
+    </element>
+  </define>
+  <define name="baseConditionalPropertyContents">
+    <ref name="ConditionType"/>
+    <optional>
+      <element name="IsRelevant">
+        <choice>
+          <value>true</value>
+          <value>false</value>
+        </choice>
+      </element>
+    </optional>
+    <optional>
+      <element name="IsRequired">
+        <choice>
+          <value>true</value>
+          <value>false</value>
+        </choice>
+      </element>
+    </optional>
+    <optional>
+      <element name="DisplaySequence">
+        <data type="integer"/>
+      </element>
+    </optional>
+  </define>
+  <define name="choiceConditionalProperty">
+    <element name="ConditionalProperty">
+      <ref name="baseConditionalPropertyContents"/>
+      <optional>
+        <ref name="ChoiceNotRelevant"/>
+      </optional>
+    </element>
+  </define>
+  <define name="numericConditionalProperty">
+    <element name="ConditionalProperty">
+      <ref name="baseConditionalPropertyContents"/>
+      <optional>
+        <element name="Minimum">
+          <data type="integer"/>
+        </element>
+      </optional>
+      <optional>
+        <element name="Maximum">
+          <data type="integer"/>
+        </element>
+      </optional>
+    </element>
+  </define>
+  <define name="computedValue">
+    <choice>
+      <element name="ArithmeticExpression">
+        <text/>
+      </element>
+      <element name="TextExpression">
+        <zeroOrMore>
+          <choice>
+            <text/>
+            <ref name="InsertValue"/>
+          </choice>
+        </zeroOrMore>
+      </element>
+    </choice>
+  </define>
+  <define name="valueBranches">
+    <oneOrMore>
+      <element name="Branch">
+        <ref name="ConditionType"/>
+        <choice>
+          <ref name="computedValue"/>
+          <ref name="valueDecisionPoint"/>
+        </choice>
+      </element>
+    </oneOrMore>
+    <optional>
+      <element name="DefaultBranch">
+        <choice>
+          <ref name="computedValue"/>
+          <ref name="valueDecisionPoint"/>
+        </choice>
+      </element>
+    </optional>
+  </define>
+  <define name="valueDecisionPoint">
+    <element name="DecisionPoint">
+      <ref name="valueBranches"/>
+    </element>
+  </define>
+  <define name="ComputedDataElement">
+    <element name="ComputedDataElement">
+      <attribute name="Id">
+        <data type="ID"/>
+      </attribute>
+      <optional>
+        <ref name="DisplaySequence"/>
+      </optional>
+      <optional>
+        <attribute name="ShowValue">
+          <choice>
+            <value>true</value>
+            <value>false</value>
+          </choice>
+        </attribute>
+      </optional>
+      <optional>
+        <element name="Label">
+          <text/>
+        </element>
+      </optional>
+      <optional>
+        <element name="Hint">
+          <text/>
+        </element>
+      </optional>
+      <optional>
+        <ref name="Diagrams"/>
+      </optional>
+      <choice>
+        <ref name="computedValue"/>
+        <ref name="valueDecisionPoint"/>
+      </choice>
+    </element>
+  </define>
+  <define name="NumericDataElement">
+    <element name="NumericDataElement">
+      <ref name="baseElementContents"/>
+      <optional>
+        <element name="Minimum">
+          <data type="decimal"/>
+        </element>
+      </optional>
+      <optional>
+        <element name="Maximum">
+          <data type="decimal"/>
+        </element>
+      </optional>
+      <optional>
+        <element name="ConditionalProperties">
+          <oneOrMore>
+            <ref name="numericConditionalProperty"/>
+          </oneOrMore>
+        </element>
+      </optional>
+    </element>
+  </define>
+  <define name="IntegerDataElement">
+    <element name="IntegerDataElement">
+      <ref name="baseElementContents"/>
+      <optional>
+        <element name="Minimum">
+          <data type="integer"/>
+        </element>
+      </optional>
+      <optional>
+        <element name="Maximum">
+          <data type="integer"/>
+        </element>
+      </optional>
+      <optional>
+        <element name="ConditionalProperties">
+          <oneOrMore>
+            <ref name="numericConditionalProperty"/>
+          </oneOrMore>
+        </element>
+      </optional>
+    </element>
+  </define>
+  <define name="DateTimeDataElement">
+    <element name="DateTimeDataElement">
+      <ref name="baseElementContents"/>
+      <element name="Format">
+        <text/>
+      </element>
+    </element>
+  </define>
+  <define name="DurationDataElement">
+    <element name="DurationDataElement">
+      <ref name="baseElementContents"/>
+    </element>
+  </define>
+  <define name="Choice">
+    <element name="Choice">
+      <element name="Value">
+        <data type="token"/>
+      </element>
+      <element name="Label">
+        <text/>
+      </element>
+      <optional>
+        <element name="Hint">
+          <text/>
+        </element>
+      </optional>
+      <optional>
+        <element name="VoiceCommand">
+          <text/>
+        </element>
+      </optional>
+      <optional>
+        <attribute name="IsDefault">
+          <choice>
+            <value>true</value>
+            <value>false</value>
+          </choice>
+        </attribute>
+      </optional>
+      <optional>
+        <element name="ReportText">
+          <text/>
+        </element>
+      </optional>
+    </element>
+  </define>
+  <define name="ChoiceInfo">
+    <element name="ChoiceInfo">
+      <ref name="Choice"/>
+      <oneOrMore>
+        <ref name="Choice"/>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="imageMapStyleAttributes">
+    <optional>
+      <attribute name="Outline"/>
+    </optional>
+    <optional>
+      <attribute name="HoverFill"/>
+    </optional>
+    <optional>
+      <attribute name="SelectedFill"/>
+    </optional>
+  </define>
+  <define name="ImageMap">
+    <element name="ImageMap">
+      <ref name="imageElements"/>
+      <optional>
+        <element name="DrawStyle">
+          <ref name="imageMapStyleAttributes"/>
+          <empty/>
+        </element>
+      </optional>
+      <element name="Map">
+        <oneOrMore>
+          <element name="Area">
+            <attribute name="Shape">
+              <choice>
+                <value>rect</value>
+                <value>poly</value>
+                <value>circle</value>
+              </choice>
+            </attribute>
+            <attribute name="Coords"/>
+            <attribute name="ChoiceValue">
+              <data type="token"/>
+            </attribute>
+            <ref name="imageMapStyleAttributes"/>
+            <empty/>
+          </element>
+        </oneOrMore>
+      </element>
+    </element>
+  </define>
+  <define name="ChoiceDataElement">
+    <element name="ChoiceDataElement">
+      <optional>
+        <attribute name="AllowFreetext">
+          <choice>
+            <value>true</value>
+            <value>false</value>
+          </choice>
+        </attribute>
+      </optional>
+      <ref name="baseElementContents"/>
+      <ref name="ChoiceInfo"/>
+      <optional>
+        <element name="ConditionalProperties">
+          <oneOrMore>
+            <ref name="choiceConditionalProperty"/>
+          </oneOrMore>
+        </element>
+      </optional>
+      <optional>
+        <ref name="ImageMap"/>
+      </optional>
+    </element>
+  </define>
+  <define name="MultiChoiceDataElement">
+    <element name="MultiChoiceDataElement">
+      <ref name="baseElementContents"/>
+      <ref name="ChoiceInfo"/>
+      <optional>
+        <element name="ConditionalProperties">
+          <oneOrMore>
+            <ref name="choiceConditionalProperty"/>
+          </oneOrMore>
+        </element>
+      </optional>
+      <optional>
+        <ref name="ImageMap"/>
+      </optional>
+    </element>
+  </define>
+  <!-- Start of next section (RULES) -->
+  <define name="ConditionType">
+    <choice>
+      <ref name="AndCondition"/>
+      <ref name="OrCondition"/>
+      <ref name="NotCondition"/>
+    </choice>
+  </define>
+  <define name="ConditionType" combine="choice">
+    <choice>
+      <ref name="EqualCondition"/>
+      <ref name="GreaterThanCondition"/>
+      <ref name="LessThanCondition"/>
+    </choice>
+  </define>
+  <define name="ConditionType" combine="choice">
+    <choice>
+      <ref name="GreaterThanOrEqualsCondition"/>
+      <ref name="LessThanOrEqualsCondition"/>
+    </choice>
+  </define>
+  <define name="ConditionType" combine="choice">
+    <choice>
+      <ref name="ContainsCondition"/>
+      <ref name="HasAnyNChoicesCondition"/>
+    </choice>
+  </define>
+  <define name="AndCondition">
+    <element name="AndCondition">
+      <ref name="ConditionType"/>
+      <oneOrMore>
+        <ref name="ConditionType"/>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="OrCondition">
+    <element name="OrCondition">
+      <ref name="ConditionType"/>
+      <oneOrMore>
+        <ref name="ConditionType"/>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="NotCondition">
+    <element name="NotCondition">
+      <oneOrMore>
+        <ref name="ConditionType"/>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="dataElementIdAttribute">
+    <attribute name="DataElementId">
+      <data type="IDREF"/>
+    </attribute>
+  </define>
+  <define name="comparisonConditionContents">
+    <ref name="dataElementIdAttribute"/>
+    <attribute name="ComparisonValue">
+      <data type="token"/>
+    </attribute>
+  </define>
+  <define name="EqualCondition">
+    <element name="EqualCondition">
+      <ref name="comparisonConditionContents"/>
+    </element>
+  </define>
+  <define name="GreaterThanCondition">
+    <element name="GreaterThanCondition">
+      <ref name="comparisonConditionContents"/>
+    </element>
+  </define>
+  <define name="LessThanCondition">
+    <element name="LessThanCondition">
+      <ref name="comparisonConditionContents"/>
+    </element>
+  </define>
+  <define name="GreaterThanOrEqualsCondition">
+    <element name="GreaterThanOrEqualsCondition">
+      <ref name="comparisonConditionContents"/>
+    </element>
+  </define>
+  <define name="LessThanOrEqualsCondition">
+    <element name="LessThanOrEqualsCondition">
+      <ref name="comparisonConditionContents"/>
+    </element>
+  </define>
+  <define name="HasAnyNChoicesCondition">
+    <element name="HasAnyNChoicesCondition">
+      <ref name="dataElementIdAttribute"/>
+      <attribute name="MinimumChoices">
+        <data type="positiveInteger"/>
+      </attribute>
+    </element>
+  </define>
+  <define name="ContainsCondition">
+    <element name="ContainsCondition">
+      <ref name="dataElementIdAttribute"/>
+      <attribute name="ComparisonValue">
+        <data type="token"/>
+      </attribute>
+    </element>
+  </define>
+  <define name="Rules">
+    <element name="Rules">
+      <ref name="DecisionPoint"/>
+    </element>
+  </define>
+  <!-- { branchModifiers, DecisionPoint } -->
+  <define name="DataElementRef">
+    <element name="DataElementRef">
+      <attribute name="DataElementId">
+        <data type="IDREF"/>
+      </attribute>
+      <empty/>
+    </element>
+  </define>
+  <define name="ChoiceRef">
+    <element name="ChoiceRef">
+      <attribute name="DataElementId">
+        <data type="IDREF"/>
+      </attribute>
+      <attribute name="ChoiceValue">
+        <data type="token"/>
+      </attribute>
+      <empty/>
+    </element>
+  </define>
+  <define name="branchModifiers">
+    <optional>
+      <!-- element RequiredDataElements { DataElementRef+ }?, -->
+      <element name="NotRelevantDataElements">
+        <oneOrMore>
+          <ref name="DataElementRef"/>
+        </oneOrMore>
+      </element>
+    </optional>
+  </define>
+  <!--
+    element RelevantDataElements { DataElementRef+ }?,
+    element NotValidChoices { ChoiceRef+ }?
+  -->
+  <define name="DecisionPoint">
+    <element name="DecisionPoint">
+      <attribute name="Id">
+        <data type="ID"/>
+      </attribute>
+      <element name="Label">
+        <text/>
+      </element>
+      <optional>
+        <element name="Description">
+          <text/>
+        </element>
+      </optional>
+      <oneOrMore>
+        <!--
+          HtmlContent -> text
+          element DescriptionImage { imageElements }?,
+        -->
+        <element name="Branch">
+          <optional>
+            <element name="Label">
+              <text/>
+            </element>
+          </optional>
+          <ref name="branchModifiers"/>
+          <ref name="ConditionType"/>
+          <choice>
+            <ref name="EndPointRef"/>
+            <ref name="DecisionPoint"/>
+          </choice>
+        </element>
+      </oneOrMore>
+      <optional>
+        <element name="DefaultBranch">
+          <optional>
+            <element name="Label">
+              <text/>
+            </element>
+          </optional>
+          <ref name="branchModifiers"/>
+          <choice>
+            <ref name="EndPointRef"/>
+            <ref name="DecisionPoint"/>
+          </choice>
+        </element>
+      </optional>
+    </element>
+  </define>
+  <!-- Begin ENDPOINTS Section -->
+  <define name="EndPointRef">
+    <element name="EndPointRef">
+      <attribute name="EndPointId">
+        <data type="IDREF"/>
+      </attribute>
+      <optional>
+        <element name="Label">
+          <text/>
+        </element>
+      </optional>
+      <optional>
+        <element name="Description">
+          <text/>
+        </element>
+      </optional>
+    </element>
+  </define>
+  <define name="EndPoints">
+    <element name="EndPoints">
+      <zeroOrMore>
+        <element name="TemplatePartial">
+          <attribute name="Id">
+            <data type="ID"/>
+          </attribute>
+          <ref name="TextTemplateContent"/>
+        </element>
+      </zeroOrMore>
+      <oneOrMore>
+        <element name="EndPoint">
+          <attribute name="Id">
+            <data type="ID"/>
+          </attribute>
+          <optional>
+            <element name="Label">
+              <text/>
+            </element>
+          </optional>
+          <optional>
+            <!--
+              (element ErrorMessage { text } | 
+               (         
+            -->
+            <ref name="Diagnosis"/>
+          </optional>
+          <ref name="ReportTexts"/>
+          <optional>
+            <ref name="ActionableFinding"/>
+          </optional>
+          <optional>
+            <ref name="ImagingFollowup"/>
+          </optional>
+        </element>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="ReportTexts">
+    <element name="ReportTexts">
+      <oneOrMore>
+        <ref name="ReportText"/>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="ReportText">
+    <oneOrMore>
+      <element name="ReportText">
+        <ref name="sectionIdAttr"/>
+        <ref name="TextTemplateContent"/>
+      </element>
+    </oneOrMore>
+  </define>
+  <define name="sectionIdAttr">
+    <attribute name="SectionId">
+      <choice>
+        <value>findings</value>
+        <value>impression</value>
+        <value>recommendation</value>
+        <value>impressionRecommendation</value>
+        <value>citation</value>
+      </choice>
+    </attribute>
+  </define>
+  <define name="recommendationBase">
+    <optional>
+      <element name="ClinicalCondition">
+        <text/>
+      </element>
+    </optional>
+    <optional>
+      <element name="References">
+        <oneOrMore>
+          <ref name="Citation"/>
+        </oneOrMore>
+      </element>
+    </optional>
+    <optional>
+      <element name="EvidenceLevel">
+        <ref name="codingSystemAttr"/>
+        <data type="token"/>
+      </element>
+    </optional>
+  </define>
+  <define name="timeFrame">
+    <element name="RecommendedTimeFrame">
+      <attribute name="Earliest">
+        <data type="duration"/>
+      </attribute>
+      <optional>
+        <attribute name="Latest">
+          <data type="duration"/>
+        </attribute>
+      </optional>
+      <empty/>
+    </element>
+  </define>
+  <define name="ImagingFollowup">
+    <element name="ImagingFollowup">
+      <ref name="recommendationBase"/>
+      <element name="PreferredImagingExam">
+        <ref name="codeAttrs"/>
+        <text/>
+      </element>
+      <element name="AcceptableImagingExams">
+        <oneOrMore>
+          <ref name="Exam"/>
+        </oneOrMore>
+      </element>
+      <element name="IndicationForFollowup">
+        <ref name="codeAttrs"/>
+        <text/>
+      </element>
+      <ref name="timeFrame"/>
+    </element>
+  </define>
+  <define name="ActionableFinding">
+    <element name="ActionableFinding">
+      <attribute name="Category"/>
+      <empty/>
+    </element>
+  </define>
+  <define name="Exam">
+    <element name="Exam">
+      <attribute name="Code"/>
+      <attribute name="CodeSystem"/>
+      <attribute name="Modality"/>
+      <attribute name="BodyRegion"/>
+      <text/>
+    </element>
+  </define>
+  <define name="TextTemplateContent">
+    <zeroOrMore>
+      <choice>
+        <text/>
+        <ref name="templateTags"/>
+      </choice>
+    </zeroOrMore>
+  </define>
+  <define name="templateTags">
+    <choice>
+      <ref name="InsertValue"/>
+      <ref name="InsertPartial"/>
+      <ref name="SectionIf"/>
+      <ref name="SectionIfNot"/>
+      <ref name="SectionIfValue"/>
+      <ref name="SectionIfValueNot"/>
+    </choice>
+  </define>
+  <define name="InsertValue">
+    <element name="InsertValue">
+      <attribute name="DataElementId">
+        <data type="IDREF"/>
+      </attribute>
+      <optional>
+        <attribute name="SignificantDigits">
+          <data type="integer"/>
+        </attribute>
+      </optional>
+      <empty/>
+    </element>
+  </define>
+  <define name="InsertPartial">
+    <element name="InsertPartial">
+      <attribute name="PartialId">
+        <data type="IDREF"/>
+      </attribute>
+      <empty/>
+    </element>
+  </define>
+  <define name="SectionIf">
+    <element name="SectionIf">
+      <attribute name="DataElementId">
+        <data type="IDREF"/>
+      </attribute>
+      <ref name="TextTemplateContent"/>
+    </element>
+  </define>
+  <define name="SectionIfValue">
+    <element name="SectionIfValue">
+      <attribute name="DataElementId">
+        <data type="IDREF"/>
+      </attribute>
+      <attribute name="ComparisonValue">
+        <data type="token"/>
+      </attribute>
+      <ref name="TextTemplateContent"/>
+    </element>
+  </define>
+  <define name="SectionIfNot">
+    <element name="SectionIfNot">
+      <attribute name="DataElementId">
+        <data type="IDREF"/>
+      </attribute>
+      <ref name="TextTemplateContent"/>
+    </element>
+  </define>
+  <define name="SectionIfValueNot">
+    <element name="SectionIfValueNot">
+      <attribute name="DataElementId">
+        <data type="IDREF"/>
+      </attribute>
+      <attribute name="ComparisonValue">
+        <data type="token"/>
+      </attribute>
+      <ref name="TextTemplateContent"/>
+    </element>
+  </define>
+</grammar>
